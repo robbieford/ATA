@@ -78,7 +78,7 @@ public class AllenTheAgent extends WumpusAgent {
                     return true;
 
                 if (this.first == null || this.second == null ||
-                 otherPair.first == null || otherPair.second == null)
+                        otherPair.first == null || otherPair.second == null)
                     return false;
 
                 return this.first.equals(otherPair.first) && this.second.equals(otherPair.second);
@@ -105,7 +105,6 @@ public class AllenTheAgent extends WumpusAgent {
     int lastMovement;
     Node start;
     Probe probe = new Probe();
-
 
     public AllenTheAgent() {
         super();
@@ -144,15 +143,12 @@ public class AllenTheAgent extends WumpusAgent {
         LinkedList<Integer> westPath = (LinkedList<Integer>) paths.get(currentPair).clone();
         westPath.add(new Integer(WEST));
 
-
         //Check percepts
         if (nearMinion()) {
             fireArrow(NORTH);
             fireArrow(SOUTH);
             fireArrow(EAST);
             fireArrow(WEST);
-        } else {
-
         }
 
         if (nearWumpus()) {
@@ -160,14 +156,10 @@ public class AllenTheAgent extends WumpusAgent {
             fireArrow(SOUTH);
             fireArrow(EAST);
             fireArrow(WEST);
-        } else {
-
         }
 
         if (nearPit()) {
             hasDangerousPercepts = true;
-        } else {
-
         }
 
         if (nearGold()) {
@@ -302,6 +294,7 @@ public class AllenTheAgent extends WumpusAgent {
 
     private int[] getNodeBeliefs(int direction) {
         int[] beliefs = new int[6];
+        
         beliefs[WUMPUS_I] = getBelief(direction, WUMPUS_HERE);
         beliefs[MINION_I] = getBelief(direction, MINION_HERE);
         beliefs[PIT_I] = getBelief(direction, PIT_HERE);
