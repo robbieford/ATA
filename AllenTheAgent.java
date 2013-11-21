@@ -1,8 +1,8 @@
 /**
  * Assignment 2 Submission - CPE 480 Fall 2013
- * 
+ *
  * Can we find the goald?
- * 
+ *
  * Tag Ashby & Robert Campbell
  * tgashby & rfcampbe
  */
@@ -10,6 +10,7 @@
 package Agents; // This is not a TODO: rename me to your Cal Poly username! :)
 
 import BotEnvironment.SearchBot.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -21,14 +22,13 @@ import java.util.LinkedList;
  * public static final int WEST = 3;
  */
 
-public class AllenTheAgent extends WumpusAgent
-{
+public class AllenTheAgent extends WumpusAgent {
     public class Probe extends BotSearch {
 
         public Probe() {
             super();
         }
-        
+
         @Override
         public void searchStep() {
             throw new UnsupportedOperationException("Not supported yet.");
@@ -38,21 +38,21 @@ public class AllenTheAgent extends WumpusAgent
         public void movementStep() {
             throw new UnsupportedOperationException("Not supported yet.");
         }
-        
+
         public ArrayList<Node> getNodes(Node current) {
             ArrayList<Node> returnList = new ArrayList<Node>();
             setStartingLocation(current);
-            
+
             returnList.add(getNorthOfSearchLocation());
             returnList.add(getEastOfSearchLocation());
             returnList.add(getSouthOfSearchLocation());
             returnList.add(getWestOfSearchLocation());
-            
+
             return returnList;
         }
-        
+
     }
-    
+
     protected static class Pair {
         private final Integer first;
         private final Integer second;
@@ -72,42 +72,40 @@ public class AllenTheAgent extends WumpusAgent
 
         public boolean equals(Object other) {
             if (other instanceof Pair) {
-                    Pair otherPair = (Pair) other;
-                    return 
-                    ((  this.first == otherPair.first ||
-                            ( this.first != null && otherPair.first != null &&
-                              this.first.equals(otherPair.first))) &&
-                     (	this.second == otherPair.second ||
-                            ( this.second != null && otherPair.second != null &&
-                              this.second.equals(otherPair.second))) );
+                Pair otherPair = (Pair) other;
+                return
+                        ((this.first == otherPair.first ||
+                                (this.first != null && otherPair.first != null &&
+                                        this.first.equals(otherPair.first))) &&
+                                (this.second == otherPair.second ||
+                                        (this.second != null && otherPair.second != null &&
+                                                this.second.equals(otherPair.second))));
             }
 
             return false;
         }
 
-        public String toString()
-        { 
-               return "(" + first + ", " + second + ")"; 
+        public String toString() {
+            return "(" + first + ", " + second + ")";
         }
     }
-    
+
     public static final int WUMPUS_I = 0;
     public static final int MINION_I = 1;
     public static final int PIT_I = 2;
     public static final int WALL_I = 3;
     public static final int GOLD_I = 4;
     public static final int SAFE_I = 5;
-    
+
     LinkedList<Node> stack;
     HashMap<Pair, LinkedList<Integer>> paths;
-    
+
     int lastMovement;
     Node start;
     Probe probe = new Probe();
-    
-    
-    public AllenTheAgent()
-    {
+
+
+    public AllenTheAgent() {
         super();
         setDeveloperName("Allen the Agent");
         stack = new LinkedList<Node>();
@@ -115,26 +113,25 @@ public class AllenTheAgent extends WumpusAgent
         paths = null;
     }
 
-    public void step()
-    {
+    public void step() {
         Node current = getCurrentNode();
-        
+
         if (paths == null) {
             paths = new HashMap<Pair, LinkedList<Integer>>();
             paths.put(new Pair(new Integer(current.getX()), new Integer(current.getY())), new LinkedList<Integer>());
         }
-        
+
         boolean hasDangerousPercepts = false;
         Pair currentPair = new Pair(new Integer(current.getX()), new Integer(current.getY()));
-        
+
         ArrayList<Node> neighbors = probe.getNodes(current);
-        
+
         //Get the current beliefs about adjacent Nodes.
-        int [] beliefsNorth = getNodeBeliefs(NORTH);
-        int [] beliefsEast = getNodeBeliefs(EAST);
-        int [] beliefsSouth = getNodeBeliefs(SOUTH);
-        int [] beliefsWest = getNodeBeliefs(WEST);
-        
+        int[] beliefsNorth = getNodeBeliefs(NORTH);
+        int[] beliefsEast = getNodeBeliefs(EAST);
+        int[] beliefsSouth = getNodeBeliefs(SOUTH);
+        int[] beliefsWest = getNodeBeliefs(WEST);
+
         //Make all the paths, we will add them to the hashmap if it ends up to be valid to go to them.
         LinkedList<Integer> northPath = (LinkedList<Integer>) paths.get(currentPair).clone();
         northPath.add(new Integer(NORTH));
@@ -144,38 +141,38 @@ public class AllenTheAgent extends WumpusAgent
         southPath.add(new Integer(SOUTH));
         LinkedList<Integer> westPath = (LinkedList<Integer>) paths.get(currentPair).clone();
         westPath.add(new Integer(WEST));
-        
-        
+
+
         //Check percepts
-        if(nearMinion()){
+        if (nearMinion()) {
             fireArrow(NORTH);
             fireArrow(SOUTH);
             fireArrow(EAST);
             fireArrow(WEST);
         } else {
-            
+
         }
 
-        if(nearWumpus()) {
+        if (nearWumpus()) {
             fireArrow(NORTH);
             fireArrow(SOUTH);
             fireArrow(EAST);
             fireArrow(WEST);
         } else {
-            
+
         }
 
-        if(nearPit()) {
+        if (nearPit()) {
             hasDangerousPercepts = true;
         } else {
-        
+
         }
 
-        if(nearGold()) {
+        if (nearGold()) {
             int moveResult;
             //If we can see the glit of gold and are not near a pit we have already
             // shot everything so check every adjacent cell!
-            if (!nearPit()){
+            if (!nearPit()) {
                 moveResult = moveNorth();
                 if (moveResult != HIT_WALL)
                     moveSouth();
@@ -188,13 +185,13 @@ public class AllenTheAgent extends WumpusAgent
                 moveResult = moveWest();
                 if (moveResult != HIT_WALL)
                     moveEast();
-                
+
             }
         }
-        
+
         if (!hasDangerousPercepts) {
             if (!stack.contains(neighbors.get(NORTH)) && !neighbors.get(NORTH).getIsTraveled() &&
-                    beliefsNorth[WALL_I] != YES){
+                    beliefsNorth[WALL_I] != YES) {
                 stack.addFirst(neighbors.get(NORTH));
                 paths.put(new Pair(neighbors.get(NORTH).getX(), neighbors.get(NORTH).getY()), northPath);
             }
@@ -214,17 +211,17 @@ public class AllenTheAgent extends WumpusAgent
                 paths.put(new Pair(neighbors.get(WEST).getX(), neighbors.get(WEST).getY()), westPath);
             }
         }
-        
+
         //Set beliefs
         setNodeBeliefs(NORTH, beliefsNorth);
         setNodeBeliefs(EAST, beliefsEast);
         setNodeBeliefs(SOUTH, beliefsSouth);
         setNodeBeliefs(WEST, beliefsWest);
-        
+
         //Move
         Node nextDestination = stack.removeFirst();
         int movementResult = doMovement(constructPath(nextDestination));
-        
+
         if (movementResult == HIT_WALL) {
             setBelief(nextDestination, WALL_HERE, YES);
             log("We hit a wall matey");
@@ -239,8 +236,8 @@ public class AllenTheAgent extends WumpusAgent
     private int doMovement(LinkedList<Integer> directions) {
         Integer temp;
         int retVal = 0;
-        
-        while(directions.size() > 0){
+
+        while (directions.size() > 0) {
             temp = directions.removeFirst();
             if (temp.equals(new Integer(NORTH))) {
                 retVal = moveNorth();
@@ -252,34 +249,34 @@ public class AllenTheAgent extends WumpusAgent
                 retVal = moveWest();
             }
         }
-        
+
         return retVal;
     }
-    
+
     private LinkedList<Integer> constructPath(Node n) {
         LinkedList<Integer> pathToCurrent = paths.get(new Pair(getBotLocation().getX(), getBotLocation().getY()));
         LinkedList<Integer> pathToNext = paths.get(new Pair(n.getX(), n.getY()));
         LinkedList<Integer> path = new LinkedList<Integer>();
         Integer temp;
-        
+
         int index = 0;
-        
+
         //Lets find the part of the path where they branch.
         while (pathToNext.size() > index && pathToCurrent.size() > index &&
-                pathToNext.get(index).equals(pathToCurrent.get(index))){
+                pathToNext.get(index).equals(pathToCurrent.get(index))) {
             index++;
         }
 
         //Construct the backtracking part of the path... harder...
-        for (int i = pathToCurrent.size() - 1; i >= index; i--){
+        for (int i = pathToCurrent.size() - 1; i >= index; i--) {
             temp = pathToCurrent.get(i);
-            if (temp.equals(new Integer(NORTH))){
+            if (temp.equals(new Integer(NORTH))) {
                 path.addLast(new Integer(SOUTH));
-            } else if (temp.equals(new Integer(SOUTH))){
+            } else if (temp.equals(new Integer(SOUTH))) {
                 path.addLast(new Integer(NORTH));
-            } else if (temp.equals(new Integer(EAST))){
+            } else if (temp.equals(new Integer(EAST))) {
                 path.addLast(new Integer(WEST));
-            } else if (temp.equals(new Integer(WEST))){
+            } else if (temp.equals(new Integer(WEST))) {
                 path.addLast(new Integer(EAST));
             } else {
                 log("wtf, directions other than the cardinals in the path?");
@@ -287,22 +284,21 @@ public class AllenTheAgent extends WumpusAgent
         }
 
         //Construct that last part of the path (this is easy)
-        for (int i = index; i < pathToNext.size(); i++){
+        for (int i = index; i < pathToNext.size(); i++) {
             path.addLast(pathToNext.get(i));
         }
-        
+
         return path;
     }
-    
-    public void reset()
-    {
+
+    public void reset() {
         super.reset();
         stack = new LinkedList<Node>();
         start = getStartingLocation();
         paths = null;
     }
-    
-    private int[] getNodeBeliefs(int direction){
+
+    private int[] getNodeBeliefs(int direction) {
         int[] beliefs = new int[6];
         beliefs[WUMPUS_I] = getBelief(direction, WUMPUS_HERE);
         beliefs[MINION_I] = getBelief(direction, MINION_HERE);
@@ -310,11 +306,11 @@ public class AllenTheAgent extends WumpusAgent
         beliefs[SAFE_I] = getBelief(direction, SAFE_HERE);
         beliefs[WALL_I] = getBelief(direction, WALL_HERE);
         beliefs[GOLD_I] = getBelief(direction, GOLD_HERE);
-        
+
         return beliefs;
     }
-    
-    private void setNodeBeliefs(int direction, int [] beliefs){
+
+    private void setNodeBeliefs(int direction, int[] beliefs) {
         setBelief(direction, beliefs[WUMPUS_I]);
         setBelief(direction, beliefs[MINION_I]);
         setBelief(direction, beliefs[PIT_I]);
