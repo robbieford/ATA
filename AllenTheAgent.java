@@ -170,16 +170,18 @@ public class AllenTheAgent extends WumpusAgent {
                 moveResult = moveNorth();
                 if (moveResult != HIT_WALL)
                     moveSouth();
+
                 moveResult = moveEast();
                 if (moveResult != HIT_WALL)
                     moveWest();
+
                 moveResult = moveSouth();
                 if (moveResult != HIT_WALL)
                     moveNorth();
+
                 moveResult = moveWest();
                 if (moveResult != HIT_WALL)
                     moveEast();
-
             }
         }
 
