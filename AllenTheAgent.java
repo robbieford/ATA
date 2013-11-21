@@ -112,6 +112,7 @@ public class AllenTheAgent extends WumpusAgent
         setDeveloperName("Allen the Agent");
         stack = new LinkedList<Node>();
         start = getStartingLocation();
+        paths = null;
     }
 
     public void step()
@@ -147,13 +148,19 @@ public class AllenTheAgent extends WumpusAgent
         
         //Check percepts
         if(nearMinion()){
-            hasDangerousPercepts = true;
+            fireArrow(NORTH);
+            fireArrow(SOUTH);
+            fireArrow(EAST);
+            fireArrow(WEST);
         } else {
             
         }
 
         if(nearWumpus()) {
-            hasDangerousPercepts = true;
+            fireArrow(NORTH);
+            fireArrow(SOUTH);
+            fireArrow(EAST);
+            fireArrow(WEST);
         } else {
             
         }
@@ -169,14 +176,22 @@ public class AllenTheAgent extends WumpusAgent
         }
         
         if (!hasDangerousPercepts) {
-            stack.addFirst(neighbors.get(NORTH));
-            paths.put(new Pair(neighbors.get(NORTH).getX(), neighbors.get(NORTH).getY()), northPath);
-            stack.addFirst(neighbors.get(EAST));
-            paths.put(new Pair(neighbors.get(EAST).getX(), neighbors.get(EAST).getY()), eastPath);
-            stack.addFirst(neighbors.get(SOUTH));
-            paths.put(new Pair(neighbors.get(SOUTH).getX(), neighbors.get(SOUTH).getY()), southPath);
-            stack.addFirst(neighbors.get(WEST));
-            paths.put(new Pair(neighbors.get(WEST).getX(), neighbors.get(WEST).getY()), westPath);
+            if (!neighbors.get(NORTH).getIsTraveled() && beliefsNorth[WALL_I] != YES){
+                stack.addFirst(neighbors.get(NORTH));
+                paths.put(new Pair(neighbors.get(NORTH).getX(), neighbors.get(NORTH).getY()), northPath);
+            }
+            if (!neighbors.get(WEST).getIsTraveled() && beliefsWest[WALL_I] != YES) {
+                stack.addFirst(neighbors.get(WEST));
+                paths.put(new Pair(neighbors.get(WEST).getX(), neighbors.get(WEST).getY()), westPath);
+            }
+            if (!neighbors.get(SOUTH).getIsTraveled() && beliefsSouth[WALL_I] != YES) {
+                stack.addFirst(neighbors.get(SOUTH));
+                paths.put(new Pair(neighbors.get(SOUTH).getX(), neighbors.get(SOUTH).getY()), southPath);
+            }
+            if (!neighbors.get(EAST).getIsTraveled() && beliefsEast[WALL_I] != YES) {
+                stack.addFirst(neighbors.get(EAST));
+                paths.put(new Pair(neighbors.get(EAST).getX(), neighbors.get(EAST).getY()), eastPath);
+            }
         }
         
         //Set beliefs
@@ -191,6 +206,7 @@ public class AllenTheAgent extends WumpusAgent
         
         if (movementResult == HIT_WALL) {
             setBelief(nextDestination, WALL_HERE, YES);
+            log("We hit a wall matey");
         } else if (movementResult == SAFE) {
             setBelief(nextDestination, SAFE_HERE, YES);
         } else if (movementResult == HURT) {
@@ -228,10 +244,9 @@ public class AllenTheAgent extends WumpusAgent
         int index = 0;
         
         //Lets find the part of the path where they branch.
-        if (pathToNext.size() > 0 && pathToCurrent.size() > 0){
-            while (pathToNext.get(index).equals(pathToCurrent.get(index))){
-                index++;
-            }
+        while (pathToNext.size() > index && pathToCurrent.size() > index &&
+                pathToNext.get(index).equals(pathToCurrent.get(index))){
+            index++;
         }
 
         //Construct the backtracking part of the path... harder...
@@ -263,6 +278,7 @@ public class AllenTheAgent extends WumpusAgent
         super.reset();
         stack = new LinkedList<Node>();
         start = getStartingLocation();
+        paths = null;
     }
     
     private int[] getNodeBeliefs(int direction){
