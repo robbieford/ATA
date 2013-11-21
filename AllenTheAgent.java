@@ -172,7 +172,24 @@ public class AllenTheAgent extends WumpusAgent
         }
 
         if(nearGold()) {
-            
+            int moveResult;
+            //If we can see the glit of gold and are not near a pit we have already
+            // shot everything so check every adjacent cell!
+            if (!nearPit()){
+                moveResult = moveNorth();
+                if (moveResult != HIT_WALL)
+                    moveSouth();
+                moveResult = moveEast();
+                if (moveResult != HIT_WALL)
+                    moveWest();
+                moveResult = moveSouth();
+                if (moveResult != HIT_WALL)
+                    moveNorth();
+                moveResult = moveWest();
+                if (moveResult != HIT_WALL)
+                    moveEast();
+                
+            }
         }
         
         if (!hasDangerousPercepts) {
