@@ -162,14 +162,10 @@ public class AllenTheAgent extends WumpusAgent {
             hasDangerousPercepts = true;
         }
 
+        //If we can see the gliter of gold go for it!
         if (nearGold()) {
-            int moveResult;
-            //If we can see the glit of gold and are not near a pit we have already
-            // shot everything so check every adjacent cell!
-            if (!nearPit()) {
-                turnTo(getDirectionOfGold());
-                moveForward();
-            }
+            turnTo(getDirectionOfGold());
+            moveForward();
         }
 
         if (!hasDangerousPercepts) {
