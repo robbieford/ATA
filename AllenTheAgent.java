@@ -176,21 +176,25 @@ public class AllenTheAgent extends WumpusAgent
         }
         
         if (!hasDangerousPercepts) {
-            if (!neighbors.get(NORTH).getIsTraveled() && beliefsNorth[WALL_I] != YES){
+            if (!stack.contains(neighbors.get(NORTH)) && !neighbors.get(NORTH).getIsTraveled() &&
+                    beliefsNorth[WALL_I] != YES){
                 stack.addFirst(neighbors.get(NORTH));
                 paths.put(new Pair(neighbors.get(NORTH).getX(), neighbors.get(NORTH).getY()), northPath);
             }
-            if (!neighbors.get(WEST).getIsTraveled() && beliefsWest[WALL_I] != YES) {
-                stack.addFirst(neighbors.get(WEST));
-                paths.put(new Pair(neighbors.get(WEST).getX(), neighbors.get(WEST).getY()), westPath);
+            if (!stack.contains(neighbors.get(EAST)) && !neighbors.get(EAST).getIsTraveled() &&
+                    beliefsEast[WALL_I] != YES) {
+                stack.addFirst(neighbors.get(EAST));
+                paths.put(new Pair(neighbors.get(EAST).getX(), neighbors.get(EAST).getY()), eastPath);
             }
-            if (!neighbors.get(SOUTH).getIsTraveled() && beliefsSouth[WALL_I] != YES) {
+            if (!stack.contains(neighbors.get(SOUTH)) && !neighbors.get(SOUTH).getIsTraveled() &&
+                    beliefsSouth[WALL_I] != YES) {
                 stack.addFirst(neighbors.get(SOUTH));
                 paths.put(new Pair(neighbors.get(SOUTH).getX(), neighbors.get(SOUTH).getY()), southPath);
             }
-            if (!neighbors.get(EAST).getIsTraveled() && beliefsEast[WALL_I] != YES) {
-                stack.addFirst(neighbors.get(EAST));
-                paths.put(new Pair(neighbors.get(EAST).getX(), neighbors.get(EAST).getY()), eastPath);
+            if (!stack.contains(neighbors.get(WEST)) && !neighbors.get(WEST).getIsTraveled() &&
+                    beliefsWest[WALL_I] != YES) {
+                stack.addFirst(neighbors.get(WEST));
+                paths.put(new Pair(neighbors.get(WEST).getX(), neighbors.get(WEST).getY()), westPath);
             }
         }
         
