@@ -73,13 +73,15 @@ public class AllenTheAgent extends WumpusAgent {
         public boolean equals(Object other) {
             if (other instanceof Pair) {
                 Pair otherPair = (Pair) other;
-                return
-                        ((this.first == otherPair.first ||
-                                (this.first != null && otherPair.first != null &&
-                                        this.first.equals(otherPair.first))) &&
-                                (this.second == otherPair.second ||
-                                        (this.second != null && otherPair.second != null &&
-                                                this.second.equals(otherPair.second))));
+
+                if (this.first == otherPair.first && this.second == otherPair.second)
+                    return true;
+
+                if (this.first == null || this.second == null ||
+                 otherPair.first == null || otherPair.second == null)
+                    return false;
+
+                return this.first.equals(otherPair.first) && this.second.equals(otherPair.second);
             }
 
             return false;
