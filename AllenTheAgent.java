@@ -76,7 +76,7 @@ public class AllenTheAgent extends WumpusAgent
     public void step()
     {
         boolean hasDangerousPercepts = false;
-        Node current = getBotLocation();
+        Node current = getCurrentLocation();
         
         ArrayList<Node> neighbors = probe.getNodes(current);
         
@@ -103,16 +103,19 @@ public class AllenTheAgent extends WumpusAgent
         } else {
             
         }
+
         if(nearWumpus()) {
             hasDangerousPercepts = true;
         } else {
             
         }
+
         if(nearPit()) {
             hasDangerousPercepts = true;
         } else {
         
         }
+
         if(nearGold()) {
             
         }
@@ -135,12 +138,12 @@ public class AllenTheAgent extends WumpusAgent
         setNodeBeliefs(WEST, beliefsWest);
         
         //Move
-        //did we just loose 1000 points?
         doMovement(constructPath(stack.removeFirst()));
         setBelief(SAFE_HERE, YES);
     }
 
     private void doMovement(LinkedList<Integer> directions) {
+        // TODO: Check return values of movement to get percepts
         Integer temp;
         while(directions.size() > 0){
             temp = directions.removeFirst();
@@ -168,6 +171,7 @@ public class AllenTheAgent extends WumpusAgent
         while (pathToNext.get(index).equals(pathToCurrent.get(index))){
             index++;
         }
+
         //Construct the backtracking part of the path... harder...
         for (int i = pathToCurrent.size() - 1; i >= index; i--){
             temp = pathToCurrent.get(i);
@@ -183,6 +187,7 @@ public class AllenTheAgent extends WumpusAgent
                 log("wtf, directions other than the cardinals in the path?");
             }
         }
+
         //Construct that last part of the path (this is easy)
         for (int i = index; i < pathToNext.size(); i++){
             path.addLast(pathToNext.get(i));
@@ -196,7 +201,7 @@ public class AllenTheAgent extends WumpusAgent
         super.reset();
         stack = new LinkedList<Node>();
         paths = new HashMap<Node, LinkedList<Integer>>();
-        start = getBotLocation();
+        start = getCurrentLocation();
     }
     
     private int[] getNodeBeliefs(int direction){
