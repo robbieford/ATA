@@ -127,6 +127,12 @@ public class AllenTheAgent extends WumpusAgent {
 
         ArrayList<Node> neighbors = probe.getNodes(current);
 
+        //If we can see the gliter of gold go for it!
+        if (nearGold()) {
+            turnTo(getDirectionOfGold());
+            moveForward();
+        }
+        
         //Get the current beliefs about adjacent Nodes.
         int[] beliefsNorth = getNodeBeliefs(NORTH);
         int[] beliefsEast = getNodeBeliefs(EAST);
@@ -134,24 +140,27 @@ public class AllenTheAgent extends WumpusAgent {
         int[] beliefsWest = getNodeBeliefs(WEST);
 
         //Make all the paths, we will add them to the hashmap if it ends up to be valid to go to them.
-        LinkedList<Integer> northPath = (LinkedList<Integer>) paths.get(currentPair).clone();
+        LinkedList<Integer> northPath = (LinkedList<Integer>) (paths.get(currentPair).clone());
         northPath.add(new Integer(NORTH));
-        LinkedList<Integer> eastPath = (LinkedList<Integer>) paths.get(currentPair).clone();
+        LinkedList<Integer> eastPath = (LinkedList<Integer>) (paths.get(currentPair).clone());
         eastPath.add(new Integer(EAST));
-        LinkedList<Integer> southPath = (LinkedList<Integer>) paths.get(currentPair).clone();
+        LinkedList<Integer> southPath = (LinkedList<Integer>) (paths.get(currentPair).clone());
         southPath.add(new Integer(SOUTH));
-        LinkedList<Integer> westPath = (LinkedList<Integer>) paths.get(currentPair).clone();
+        LinkedList<Integer> westPath = (LinkedList<Integer>) (paths.get(currentPair).clone());
         westPath.add(new Integer(WEST));
 
-        //Check percepts
-        if (nearMinion()) {
-            fireArrow(NORTH);
-            fireArrow(SOUTH);
-            fireArrow(EAST);
-            fireArrow(WEST);
-        }
-
+        //We can quit shooting after hitting the Wumpus since there is only one
         if (nearWumpus()) {
+            if (fireArrow(NORTH) != HIT_WUMPUS) {
+                if (fireArrow(SOUTH) != HIT_WUMPUS) {
+                    if (fireArrow(EAST) != HIT_WUMPUS) {
+                        fireArrow(WEST);
+                    }
+                }
+            }
+        }
+        
+        if (nearMinion()) {
             fireArrow(NORTH);
             fireArrow(SOUTH);
             fireArrow(EAST);
@@ -160,12 +169,6 @@ public class AllenTheAgent extends WumpusAgent {
 
         if (nearPit()) {
             hasDangerousPercepts = true;
-        }
-
-        //If we can see the gliter of gold go for it!
-        if (nearGold()) {
-            turnTo(getDirectionOfGold());
-            moveForward();
         }
 
         if (!hasDangerousPercepts) {
