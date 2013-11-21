@@ -201,7 +201,7 @@ public class AllenTheAgent extends WumpusAgent
         super.reset();
         stack = new LinkedList<Node>();
         paths = new HashMap<Node, LinkedList<Integer>>();
-        start = getCurrentLocation();
+        start = getStartingLocation();
     }
     
     private int[] getNodeBeliefs(int direction){
